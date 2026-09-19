@@ -268,11 +268,10 @@
             });
         }
     </script>
-
     <!-- FIREBASE MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -316,12 +315,7 @@
             }
         };
 
-        getRedirectResult(auth).then((result) => {
-            if (result && result.user) {
-                handleUserLogin(result.user);
-            }
-        }).catch((error) => console.error("Redirect Error:", error));
-
+        // LISTENS FOR SUCCESSFUL POPUP LOGIN ON REFRESH
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 handleUserLogin(user);
@@ -331,14 +325,22 @@
             }
         });
 
-        window.login = async function() {
+        // STRICT POPUP LOGIN (Bypasses Chrome Cookie Blocks)
+        window.login = function() {
             document.getElementById('btn-text').innerText = 'Connecting...';
-            try {
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                console.warn("Popup blocked or failed, falling back to redirect...", error);
-                signInWithRedirect(auth, provider);
-            }
+            
+            signInWithPopup(auth, provider).then((result) => {
+                handleUserLogin(result.user);
+            }).catch((error) => {
+                console.warn("Login error:", error);
+                document.getElementById('btn-text').innerText = 'Sign in with Google';
+                
+                if (error.code === 'auth/popup-blocked') {
+                    alert("⚠️ Chrome blocked the sign-in window! Tap 'Always Show' at the bottom of your screen, or allow pop-ups for this site in Chrome settings, then try again.");
+                } else {
+                    alert("Login failed: " + error.message);
+                }
+            });
         };
 
         window.logout = function() {
@@ -355,7 +357,7 @@
             document.getElementById('post-modal').classList.add('hidden');
             document.getElementById('event-title').value = '';
             document.getElementById('event-date').value = '';
-            document.getElementById('event-end-date').value = ''; // CLEARS END DATE
+            document.getElementById('event-end-date').value = ''; 
             document.getElementById('event-time').value = '';
             document.getElementById('event-location').value = '';
             document.getElementById('event-image').value = '';
@@ -390,7 +392,7 @@
             }
 
             const date = document.getElementById('event-date').value;
-            const endDate = document.getElementById('event-end-date').value; // GRABS END DATE
+            const endDate = document.getElementById('event-end-date').value;
             const time = document.getElementById('event-time').value;
             const location = document.getElementById('event-location').value;
             const image = document.getElementById('event-image').value;
@@ -410,7 +412,7 @@
                     sport,
                     organizerType,
                     date,
-                    endDate: endDate || "", // SAVES END DATE TO FIRESTORE
+                    endDate: endDate || "", 
                     time: time || "TBD",
                     location,
                     image: image.trim() || "",
@@ -448,3 +450,6 @@
     </script>
 </body>
 </html>
+
+    
+        
