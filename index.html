@@ -284,14 +284,18 @@
         });
 
         window.login = function() {
-            document.getElementById('btn-text').innerText = 'Connecting...';
-            signInWithPopup(auth, provider).then((result) => {
-                handleUserLogin(result.user);
-            }).catch((error) => {
-                console.warn("Login error:", error);
-                document.getElementById('btn-text').innerText = 'Sign in with Google';
-                alert("Login failed: " + error.message);
-            });
+    document.getElementById('btn-text').innerText = 'Connecting...';
+    signInWithPopup(auth, provider).then((result) => {
+        handleUserLogin(result.user);
+    }).catch((error) => {
+        console.warn("Login error code:", error.code);
+        document.getElementById('btn-text').innerText = 'Sign in with Google';
+        
+        // This will pop up the exact error code on your phone screen
+        alert("Firebase Error [" + error.code + "]: " + error.message);
+    });
+};
+        
         };
 
         window.logout = function() {
