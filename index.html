@@ -10,266 +10,169 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .pb-safe { padding-bottom: 90px; }
-        .gradient-text { background: linear-gradient(90deg, #2563eb, #14b8a6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .gradient-text { background: linear-gradient(135deg, #2563eb, #14b8a6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
         html.dark body { background-color: #111827; }
         html.dark .app-bg { background-color: #1f2937; color: #f9fafb; }
         html.dark .card-bg { background-color: #374151; color: #f9fafb; border-color: #4b5563; }
         html.dark .text-muted { color: #9ca3af; }
-        html.dark input, html.dark select, html.dark textarea { background-color: #4b5563 !important; color: white !important; border-color: #6b7280 !important; }
-        
-        /* FALLBACK: Ensures hidden class works perfectly */
+        html.dark input, html.dark select, html.dark textarea { background-color: #1f2937 !important; color: white !important; border-color: #4b5563 !important; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body class="h-screen w-full flex justify-center overflow-hidden bg-gray-900 transition-colors">
 
-    <div class="w-full max-w-md h-full bg-gray-50 app-bg relative overflow-hidden flex flex-col shadow-2xl transition-colors duration-300">
-
-        <!-- LOGIN SCREEN -->
-        <div id="login-screen" class="absolute inset-0 bg-white app-bg z-50 flex flex-col justify-center items-center px-6 transition-opacity duration-500">
-            <div class="text-center mb-10 w-full">
-                <!-- Blue Trophy Icon -->
+    <div class="w-full max-w-md h-full bg-white app-bg relative overflow-hidden flex flex-col shadow-2xl transition-colors">
+        
+        <div id="login-screen" class="absolute inset-0 bg-white app-bg z-50 flex flex-col justify-center items-center p-6 text-center">
+            <div class="mb-10 w-full">
                 <i class="fa-solid fa-trophy text-6xl text-blue-600 mb-4 drop-shadow-sm"></i>
-                <h1 class="text-4xl font-black gradient-text tracking-tight mb-2">SportsX</h1>
+                <h1 class="text-4xl font-black gradient-text tracking-right mb-2">SportsX</h1>
                 <p class="text-gray-500 text-muted font-medium">Discover, Connect & Compete.</p>
             </div>
             <div class="w-full space-y-4">
-                <button onclick="login()" class="w-full bg-white card-bg border border-gray-300 text-gray-700 font-bold py-3.5 rounded-xl shadow-sm flex items-center justify-center space-x-3 transition">
+                <button onclick="login()" class="w-full bg-white card-bg border border-gray-300 font-bold py-3.5 rounded-xl shadow-sm flex items-center justify-center space-x-3 transition-colors">
                     <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google">
                     <span id="btn-text">Sign in with Google</span>
                 </button>
             </div>
         </div>
 
-        <!-- CREATE EVENT POPUP FORM -->
-        <div id="post-modal" class="hidden absolute inset-0 bg-gray-900 bg-opacity-60 z-50 flex justify-center items-center px-4 backdrop-filter backdrop-blur-sm overflow-y-auto">
-            <div class="bg-white card-bg w-full p-6 rounded-2xl shadow-xl my-8">
-                <h2 class="text-2xl font-black mb-4">Post Tournament / Event</h2>
-                
-                <label class="block text-xs font-bold uppercase text-muted mb-1">Event Title</label>
-                <input type="text" id="event-title" placeholder="e.g., Tech Corporate Cup" class="w-full border border-gray-300 p-3 rounded-xl mb-3 outline-none text-sm">
-                
-                <label class="block text-xs font-bold uppercase text-muted mb-1">Organizer Type</label>
-                <select id="organizer-type" class="w-full border border-gray-300 p-3 rounded-xl mb-3 outline-none text-sm">
-                    <option value="🏢 Corporate / Company">🏢 Corporate / Company</option>
-                    <option value="🎓 College / University">🎓 College / University</option>
-                    <option value="🏆 Sports Academy">🏆 Sports Academy</option>
-                    <option value="👤 Independent Organizer">👤 Independent Organizer</option>
-                </select>
-
-                <label class="block text-xs font-bold uppercase text-muted mb-1">Sport / Category</label>
-                <select id="event-sport" onchange="checkCustomSport(this)" class="w-full border border-gray-300 p-3 rounded-xl mb-3 outline-none text-sm">
-                    <option value="Cricket">Cricket</option>
-                    <option value="Football">Football</option>
-                    <option value="Kabaddi">Kabaddi</option>
-                    <option value="Badminton">Badminton</option>
-                    <option value="Basketball">Basketball</option>
-                    <option value="Hockey">Hockey</option>
-                    <option value="Volleyball">Volleyball</option>
-                    <option value="Table Tennis">Table Tennis</option>
-                    <option value="Tennis">Tennis</option>
-                    <option value="Athletics / Running">Athletics / Running</option>
-                    <option value="Chess">Chess</option>
-                    <option value="Esports / Gaming">Esports / Gaming</option>
-                    <option value="Other">Other (Type custom)...</option>
-                </select>
-
-                <div id="custom-sport-box" class="hidden mb-3">
-                    <label class="block text-xs font-bold uppercase text-muted mb-1">Specify Sport</label>
-                    <input type="text" id="custom-sport-input" placeholder="e.g., Swimming" class="w-full border border-gray-300 p-3 rounded-xl outline-none text-sm">
-                </div>
-
-                <!-- ADDED START AND END DATE HERE -->
-                <div class="flex space-x-2 mb-3">
-                    <div class="flex-1">
-                        <label class="block text-xs font-bold uppercase text-muted mb-1">Start Date</label>
-                        <input type="date" id="event-date" class="w-full border border-gray-300 p-3 rounded-xl outline-none text-sm">
-                    </div>
-                    <div class="flex-1">
-                        <label class="block text-xs font-bold uppercase text-muted mb-1">End Date</label>
-                        <input type="date" id="event-end-date" class="w-full border border-gray-300 p-3 rounded-xl outline-none text-sm">
-                    </div>
-                </div>
-
-                <label class="block text-xs font-bold uppercase text-muted mb-1">Time</label>
-                <input type="text" id="event-time" placeholder="5:00 PM" class="w-full border border-gray-300 p-3 rounded-xl mb-3 outline-none text-sm">
-
-                <label class="block text-xs font-bold uppercase text-muted mb-1">Location / Venue (e.g., Tamil Nadu, Kerala)</label>
-                <input type="text" id="event-location" placeholder="e.g., Chennai, Tamil Nadu" class="w-full border border-gray-300 p-3 rounded-xl mb-3 outline-none text-sm">
-
-                <label class="block text-xs font-bold uppercase text-muted mb-1">Photo Image URL (Optional)</label>
-                <input type="url" id="event-image" placeholder="https://..." class="w-full border border-gray-300 p-3 rounded-xl mb-3 outline-none text-sm">
-
-                <label class="block text-xs font-bold uppercase text-muted mb-1">Registration Link (URL)</label>
-                <input type="url" id="event-link" placeholder="https://..." class="w-full border border-gray-300 p-3 rounded-xl mb-6 outline-none text-sm">
-
-                <div class="flex space-x-3">
-                    <button onclick="closePostModal()" class="flex-1 bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 text-sm">Cancel</button>
-                    <button onclick="submitRealEvent()" id="submit-btn" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 text-sm">Publish Event</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- HEADER -->
-        <header class="bg-white card-bg border-b border-gray-200 p-4 sticky top-0 z-40 flex justify-between items-center transition-colors">
-            <h1 class="text-xl font-black tracking-tight">SportsX</h1>
+        <header class="px-4 py-3 flex justify-between items-center border-b border-gray-200 card-bg z-10 transition-colors">
+            <h1 class="text-xl font-black">SportsX</h1>
             <div class="flex items-center space-x-2">
-                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center text-sm shadow-sm transition">
+                <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-full bg-gray-100 card-bg flex items-center justify-center text-gray-700 dark:text-yellow-400 transition">
                     <i id="theme-icon" class="fa-solid fa-moon"></i>
                 </button>
-                <button onclick="openPostModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl font-bold text-xs shadow-md transition flex items-center space-x-1">
-                    <i class="fa-solid fa-plus"></i>
-                    <span>Post</span>
+                <button onclick="openPostModal()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-4 py-2 rounded-xl text-sm flex items-center space-x-1.5 shadow-md transition-colors">
+                    <i class="fa-solid fa-plus"></i><span>Post</span>
                 </button>
             </div>
         </header>
-
-        <!-- CONTENT TABS -->
-        <main class="flex-1 overflow-y-auto hide-scrollbar pb-safe w-full p-4 flex flex-col items-center transition-colors">
+                <div class="flex-1 overflow-y-auto pb-safe">
             
-            <!-- FEED TAB -->
-            <div id="tab-feed" class="w-full flex flex-col items-center">
-                <!-- SEARCH BAR -->
-                <div class="w-full mb-4 relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-400 text-xs"></i>
-                    <input type="text" id="search-input" oninput="filterEvents()" placeholder="Search by location (e.g. Tamil Nadu, Kerala) or sport..." class="w-full bg-white card-bg border border-gray-200 pl-10 pr-4 py-2.5 rounded-xl text-xs outline-none shadow-sm">
+            <div id="feed-view" class="p-4 space-y-4">
+                <div class="relative">
+                    <i class="fa-solid fa-search absolute left-3 top-3.5 text-gray-400 text-sm"></i>
+                    <input type="text" id="search-input" oninput="filterEvents()" placeholder="Search by location (e.g. Tamil Nadu, Kerala) or sport" class="w-full pl-9 pr-4 py-3 bg-white card-bg border border-gray-200 rounded-2xl text-sm outline-none transition-colors">
                 </div>
-
-                <p id="user-welcome" class="text-center text-muted text-xs mb-4 font-bold uppercase tracking-wider">Loading...</p>
-                <div id="events-feed" class="w-full space-y-4"></div>
+                
+                <div id="user-welcome" class="text-xs font-bold uppercase tracking-wider text-black dark:text-white text-center mt-4 mb-2"></div>
+                
+                <div id="events-feed" class="space-y-4"></div>
             </div>
 
-            <!-- ACCOUNT CENTRE TAB -->
-            <div id="tab-account" class="w-full hidden space-y-4">
-                <div class="bg-white card-bg p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
-                    <div class="w-20 h-20 bg-gradient-to-tr from-blue-600 to-teal-400 text-white rounded-full flex items-center justify-center text-3xl font-black mx-auto mb-3 shadow-md overflow-hidden" id="profile-avatar-container">
+            <div id="account-view" class="p-4 space-y-4 hidden">
+                <div class="bg-white card-bg p-6 rounded-3xl border border-gray-200 text-center shadow-sm">
+                    <div id="profile-avatar-container" class="w-20 h-20 bg-blue-600 text-white rounded-full flex items-center justify-center text-3xl font-black mx-auto mb-3 overflow-hidden shadow-inner">
                         <span id="profile-initial">U</span>
                     </div>
-                    <h2 id="profile-name" class="text-xl font-black mb-1">User Name</h2>
-                    <p id="profile-email" class="text-xs text-muted mb-4">user@gmail.com</p>
-
-                    <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl mb-4 text-left space-y-3">
-                        <label class="block text-xs font-bold uppercase text-muted">Change Profile Picture URL</label>
-                        <div class="flex space-x-2">
-                            <input type="url" id="profile-pic-input" placeholder="https://... image link" class="w-full border border-gray-300 p-2.5 rounded-xl text-xs outline-none">
-                            <button onclick="updateProfilePic()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-2.5 rounded-xl text-xs">Update</button>
-                        </div>
-                    </div>
-
-                    <div class="border-t border-gray-100 dark:border-gray-700 pt-4 text-left space-y-3 mb-6">
-                        <h3 class="text-xs font-bold uppercase text-muted tracking-wider">Account Centre Settings</h3>
-                        <div class="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl flex items-center justify-between text-xs font-semibold">
-                            <span>Authentication Status</span>
-                            <span class="text-green-600 dark:text-green-400"><i class="fa-solid fa-circle-check mr-1"></i>Google Verified</span>
-                        </div>
-                    </div>
-
-                    <button onclick="logout()" class="w-full bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-bold py-3 rounded-xl text-xs hover:bg-red-100 transition">
-                        <i class="fa-solid fa-right-from-bracket mr-1.5"></i> Log Out
+                    <h2 id="profile-name" class="text-lg font-bold">User Name</h2>
+                    <p id="profile-email" class="text-xs text-gray-500 text-muted mb-4">email@example.com</p>
+                    
+                    <button onclick="logout()" class="w-full bg-red-50 dark:bg-red-900 dark:bg-opacity-20 text-red-600 dark:text-red-400 font-bold py-3.5 rounded-2xl text-sm border border-red-200 dark:border-red-800 transition">
+                        <i class="fa-solid fa-right-from-bracket mr-2"></i> Log Out
                     </button>
                 </div>
             </div>
 
-        </main>
-        <!-- BOTTOM NAVIGATION -->
-        <nav class="bg-white card-bg border-t border-gray-200 h-16 absolute bottom-0 inset-x-0 z-40 flex justify-around items-center px-2">
-            <button onclick="switchTab('feed')" id="nav-feed" class="flex-1 flex flex-col items-center justify-center text-blue-600 font-bold transition">
-                <i class="fa-solid fa-house text-lg mb-0.5"></i>
-                <span class="text-[10px]">Feed</span>
+        </div>
+
+        <nav class="absolute bottom-0 left-0 right-0 h-16 bg-white card-bg border-t border-gray-200 flex justify-around items-center px-6 z-30 transition-colors">
+            <button onclick="switchTab('feed')" id="nav-feed" class="flex flex-col items-center text-blue-600 dark:text-blue-400">
+                <i class="fa-solid fa-house text-lg mb-1"></i>
+                <span class="text-[10px] font-bold">Feed</span>
             </button>
-            <button onclick="switchTab('account')" id="nav-account" class="flex-1 flex flex-col items-center justify-center text-gray-400 hover:text-gray-600 font-bold transition">
-                <i class="fa-solid fa-user-gear text-lg mb-0.5"></i>
-                <span class="text-[10px]">Account Centre</span>
+            <button onclick="switchTab('account')" id="nav-account" class="flex flex-col items-center text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-user-gear text-lg mb-1"></i>
+                <span class="text-[10px] font-bold">Account Centre</span>
             </button>
         </nav>
-    </div>
-        <!-- SCRIPT HELPERS -->
-    <script>
-        let allEventsCache = [];
 
-        function toggleDarkMode() {
-            const htmlTag = document.documentElement;
-            const icon = document.getElementById('theme-icon');
-            htmlTag.classList.toggle('dark');
-            if (htmlTag.classList.contains('dark')) {
-                icon.className = "fa-solid fa-sun text-yellow-400";
-            } else {
-                icon.className = "fa-solid fa-moon text-gray-600";
-            }
-        }
+        <div id="post-modal" class="absolute inset-0 bg-black bg-opacity-50 z-50 hidden flex flex-col justify-end backdrop-blur-sm overflow-y-auto">
+            <div class="bg-white card-bg p-6 rounded-t-3xl space-y-4 max-h-[90vh] overflow-y-auto border-t border-gray-200">
+                <div class="flex justify-between items-center border-b border-gray-200 card-bg pb-3">
+                    <h2 class="text-xl font-black">Post Tournament / Event</h2>
+                    <button onclick="closePostModal()" class="w-8 h-8 rounded-full bg-gray-100 card-bg flex items-center justify-center text-gray-500">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-500 text-muted mb-1 block">Event Title</label>
+                    <input type="text" id="event-title" placeholder="e.g., Tech Corporate Cup" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none">
+                </div>
 
-        window.switchTab = function(tabName) {
-            document.getElementById('tab-feed').classList.add('hidden');
-            document.getElementById('tab-account').classList.add('hidden');
-            document.getElementById('nav-feed').className = "flex-1 flex flex-col items-center justify-center text-gray-400 font-bold transition";
-            document.getElementById('nav-account').className = "flex-1 flex flex-col items-center justify-center text-gray-400 font-bold transition";
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-500 text-muted mb-1 block">Organizer Type</label>
+                    <select id="organizer-type" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none">
+                        <option value="🏢 Corporate / Company">🏢 Corporate / Company</option>
+                        <option value="🎓 College / University">🎓 College / University</option>
+                        <option value="🏆 Sports Academy">🏆 Sports Academy</option>
+                        <option value="⭐ Independent Organizer">⭐ Independent Organizer</option>
+                    </select>
+                </div>
 
-            if (tabName === 'feed') {
-                document.getElementById('tab-feed').classList.remove('hidden');
-                document.getElementById('nav-feed').className = "flex-1 flex flex-col items-center justify-center text-blue-600 font-bold transition";
-            } else if (tabName === 'account') {
-                document.getElementById('tab-account').classList.remove('hidden');
-                document.getElementById('nav-account').className = "flex-1 flex flex-col items-center justify-center text-blue-600 font-bold transition";
-            }
-        }
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-500 text-muted mb-1 block">Sport / Category</label>
+                    <select id="event-sport" onchange="checkCustomSport(this)" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none">
+                        <option value="Cricket">Cricket</option>
+                        <option value="Football">Football</option>
+                        <option value="Kabaddi">Kabaddi</option>
+                        <option value="Badminton">Badminton</option>
+                        <option value="Basketball">Basketball</option>
+                        <option value="Hockey">Hockey</option>
+                        <option value="Volleyball">Volleyball</option>
+                        <option value="Table Tennis">Table Tennis</option>
+                        <option value="Tennis">Tennis</option>
+                        <option value="Athletics / Running">Athletics / Running</option>
+                        <option value="Chess">Chess</option>
+                        <option value="Other">Other (Custom Sport)</option>
+                    </select>
+                </div>
 
-        window.filterEvents = function() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            const feed = document.getElementById('events-feed');
+                <div id="custom-sport-box" class="hidden">
+                    <label class="text-xs font-bold uppercase text-gray-500 text-muted mb-1 block">Specify Sport</label>
+                    <input type="text" id="custom-sport-input" placeholder="e.g., Swimming" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none">
+                </div>
 
-            if (allEventsCache.length === 0) {
-                feed.innerHTML = '<p class="text-center text-muted mt-10 text-sm">No active sports events yet. Tap "+ Post" to add one!</p>';
-                return;
-            }
-            
-            const filtered = allEventsCache.filter(ev => 
-                (ev.title || "").toLowerCase().includes(query) || 
-                (ev.location || "").toLowerCase().includes(query) || 
-                (ev.sport || "").toLowerCase().includes(query) ||
-                (ev.organizerType || "").toLowerCase().includes(query)
-            );
-
-            if (filtered.length === 0) {
-                feed.innerHTML = '<p class="text-center text-muted mt-10 text-sm">No matching events found.</p>';
-                return;
-            }
-
-            feed.innerHTML = '';
-            filtered.forEach(ev => {
-                let imageHTML = "";
-                if (ev.image && ev.image.startsWith("http")) {
-                    imageHTML = `<div class="mb-3 -mx-4 -mt-4 overflow-hidden rounded-t-2xl h-40 bg-gray-200"><img src="${ev.image}" class="w-full h-full object-cover" alt="Event Poster"></div>`;
-                }
-
-                // FORMAT THE DATE TO SHOW START AND END IF AVAILABLE
-                const dateDisplay = ev.endDate ? `${ev.date} to ${ev.endDate}` : ev.date;
-
-                feed.innerHTML += `
-                    <div class="bg-white card-bg p-4 rounded-2xl shadow-sm border border-gray-100 mb-4 transition transform hover:scale-[1.01] overflow-hidden">
-                        ${imageHTML}
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="bg-blue-100 text-blue-700 text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">${ev.sport}</span>
-                            <span class="text-xs bg-gray-100 text-muted font-bold px-2.5 py-1 rounded-lg">${ev.organizerType || 'Organizer'}</span>
-                        </div>
-                        <h3 class="font-black text-lg mb-2 leading-snug">${ev.title}</h3>
-                        <p class="text-xs text-muted font-semibold mb-3"><i class="fa-solid fa-circle-user mr-1"></i> Posted by ${ev.postedBy}</p>
-                        
-                        <div class="space-y-1.5 text-xs font-medium text-muted mb-4 bg-gray-50 p-3 rounded-xl">
-                            <div class="flex items-center"><i class="fa-solid fa-calendar-days w-5 text-blue-500"></i><span class="ml-1">${dateDisplay} at ${ev.time}</span></div>
-                            <div class="flex items-center"><i class="fa-solid fa-location-dot w-5 text-red-500"></i><span class="ml-1">${ev.location}</span></div>
-                        </div>
-
-                        <a href="${ev.link}" target="_blank" class="w-full bg-blue-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow hover:bg-blue-700 transition">
-                            <span>Register / Event Link</span>
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
-                        </a>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-bold uppercase text-gray-500 text-muted mb-1 block">Start Date</label>
+                        <input type="date" id="event-date" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none">
                     </div>
-                `;
-            });
-        }
-    </script>
-    <!-- FIREBASE MODULE -->
-    <script type="module">
+                    <div>
+                        <label class="text-xs font-bold uppercase text-gray-500 text-muted mb-1 block">End Date (Optional)</label>
+                        <input type="date" id="event-end-date" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-500 text-muted mb-1 block">Time</label>
+                    <input type="text" id="event-time" placeholder="e.g., 9:00 AM to 5:00 PM" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none">
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-500 text-muted mb-1 block">Location / Venue</label>
+                    <input type="text" id="event-location" placeholder="e.g., Kongu Engineering College, Erode" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none">
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-500 text-muted mb-1 block">Image URL (Optional)</label>
+                    <input type="url" id="event-image" placeholder="https://images.unsplash.com/..." class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none">
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-500 text-muted mb-1 block">Registration Link / URL</label>
+                    <input type="url" id="event-link" placeholder="https://forms.gle/..." class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none">
+                </div>
+
+                <button onclick="submitRealEvent()" id="submit-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-md transition">Publish Event</button>
+            </div>
+        </div>
+
+    </div>
+        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -289,9 +192,42 @@
         const provider = new GoogleAuthProvider();
         const db = getFirestore(app);
 
+        let allEventsCache = [];
+
+        window.switchTab = function(tab) {
+            const feedView = document.getElementById('feed-view');
+            const accountView = document.getElementById('account-view');
+            const navFeed = document.getElementById('nav-feed');
+            const navAccount = document.getElementById('nav-account');
+
+            if (tab === 'feed') {
+                feedView.classList.remove('hidden');
+                accountView.classList.add('hidden');
+                navFeed.className = "flex flex-col items-center text-blue-600 dark:text-blue-400";
+                navAccount.className = "flex flex-col items-center text-gray-400 hover:text-gray-600";
+            } else {
+                feedView.classList.add('hidden');
+                accountView.classList.remove('hidden');
+                navFeed.className = "flex flex-col items-center text-gray-400 hover:text-gray-600";
+                navAccount.className = "flex flex-col items-center text-blue-600 dark:text-blue-400";
+            }
+        };
+
+        window.toggleDarkMode = function() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = "fa-solid fa-moon";
+            } else {
+                html.classList.add('dark');
+                icon.className = "fa-solid fa-sun";
+            }
+        };
+
         function handleUserLogin(user) {
             document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('user-welcome').innerText = "Logged in as: " + user.displayName;
+            document.getElementById('user-welcome').innerText = "LOGGED IN AS: " + user.displayName.toUpperCase();
             document.getElementById('profile-name').innerText = user.displayName;
             document.getElementById('profile-email').innerText = user.email;
             
@@ -304,18 +240,6 @@
             loadEvents();
         }
 
-        window.updateProfilePic = function() {
-            const url = document.getElementById('profile-pic-input').value.trim();
-            const avatarContainer = document.getElementById('profile-avatar-container');
-            if (url) {
-                avatarContainer.innerHTML = `<img src="${url}" class="w-full h-full object-cover" alt="Profile">`;
-                alert("Profile picture updated!");
-            } else {
-                alert("Please enter a valid image URL.");
-            }
-        };
-
-        // LISTENS FOR SUCCESSFUL POPUP LOGIN ON REFRESH
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 handleUserLogin(user);
@@ -325,21 +249,14 @@
             }
         });
 
-        // STRICT POPUP LOGIN (Bypasses Chrome Cookie Blocks)
         window.login = function() {
             document.getElementById('btn-text').innerText = 'Connecting...';
-            
             signInWithPopup(auth, provider).then((result) => {
                 handleUserLogin(result.user);
             }).catch((error) => {
-                console.warn("Login error:", error);
+                console.warn("Login error code:", error.code);
                 document.getElementById('btn-text').innerText = 'Sign in with Google';
-                
-                if (error.code === 'auth/popup-blocked') {
-                    alert("⚠️ Chrome blocked the sign-in window! Tap 'Always Show' at the bottom of your screen, or allow pop-ups for this site in Chrome settings, then try again.");
-                } else {
-                    alert("Login failed: " + error.message);
-                }
+                alert("Firebase Error [" + error.code + "]: " + error.message);
             });
         };
 
@@ -447,9 +364,62 @@
                 feed.innerHTML = '<p class="text-center text-red-500 text-sm mt-5">Failed to load events.</p>';
             }
         }
+
+        window.filterEvents = function() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const feed = document.getElementById('events-feed');
+            feed.innerHTML = '';
+
+            const filtered = allEventsCache.filter(ev => 
+                ev.location.toLowerCase().includes(searchTerm) || 
+                ev.title.toLowerCase().includes(searchTerm) ||
+                ev.sport.toLowerCase().includes(searchTerm)
+            );
+
+            if (filtered.length === 0) {
+                feed.innerHTML = '<p class="text-center text-gray-400 text-sm mt-10">No sports events found.</p>';
+                return;
+            }
+
+            filtered.sort((a, b) => b.createdAt - a.createdAt);
+
+            filtered.forEach(ev => {
+                let imageHTML = '';
+                if (ev.image && ev.image.startsWith("http")) {
+                    imageHTML = `<div class="mb-3 -mx-4 -mt-4"><img src="${ev.image}" class="w-full h-48 object-cover rounded-t-2xl" alt="Event Image"></div>`;
+                }
+
+                const dateDisplay = ev.endDate ? `${ev.date} to ${ev.endDate}` : ev.date;
+
+                feed.innerHTML += `
+                    <div class="bg-white card-bg p-4 rounded-2xl shadow-sm border border-gray-100 space-y-3 transition-colors">
+                        ${imageHTML}
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full uppercase">${ev.sport}</span>
+                            <span class="text-[10px] text-gray-500 text-muted font-bold">${ev.organizerType}</span>
+                        </div>
+                        <h3 class="text-lg font-bold">${ev.title}</h3>
+                        <p class="text-xs text-gray-500 text-muted font-medium flex items-center space-x-1">
+                            <i class="fa-solid fa-user-shield mr-1"></i> Posted by ${ev.postedBy}
+                        </p>
+                        <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded-xl space-y-1.5 text-xs">
+                            <div class="flex items-center text-gray-600 dark:text-gray-300">
+                                <i class="fa-regular fa-calendar text-blue-600 w-5"></i>
+                                <span class="font-medium">${dateDisplay} at ${ev.time}</span>
+                            </div>
+                            <div class="flex items-center text-gray-600 dark:text-gray-300">
+                                <i class="fa-solid fa-location-dot text-red-500 w-5"></i>
+                                <span class="font-medium">${ev.location}</span>
+                            </div>
+                        </div>
+                        <a href="${ev.link}" target="_blank" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-sm transition">
+                            <span>Register / Event Link</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                        </a>
+                    </div>
+                `;
+            });
+        };
     </script>
 </body>
 </html>
-
-    
-        
