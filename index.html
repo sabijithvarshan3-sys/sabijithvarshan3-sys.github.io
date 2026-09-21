@@ -23,6 +23,7 @@
 
     <div class="w-full max-w-md h-full bg-white app-bg relative flex flex-col shadow-2xl transition-colors">
         
+        <!-- Login Screen -->
         <div id="login-screen" class="absolute inset-0 bg-white app-bg z-50 flex flex-col justify-center items-center p-6 text-center">
             <div class="mb-10 w-full">
                 <i class="fa-solid fa-trophy text-6xl text-blue-600 mb-4 drop-shadow-sm"></i>
@@ -37,6 +38,7 @@
             </div>
         </div>
 
+        <!-- Header -->
         <header class="px-5 py-3 flex justify-between items-center border-b border-gray-100 card-bg z-10 transition-colors flex-shrink-0">
             <h1 class="text-xl font-black text-black dark:text-white">SportsX</h1>
             <div class="flex items-center space-x-3">
@@ -194,6 +196,12 @@
                     <input type="text" id="event-specific-location" placeholder="e.g., Kongu Engineering College, Perundurai" class="w-full border border-red-200 p-3 rounded-xl text-sm outline-none">
                 </div>
 
+                <div>
+                    <label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Event Description & Requirements (Max 200 words)</label>
+                    <textarea id="event-description" rows="3" oninput="checkWordLimit(this)" placeholder="What players need, rules, entry fees, gear, etc." class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none resize-none"></textarea>
+                    <p id="word-count-display" class="text-[10px] text-gray-400 text-right mt-1 font-medium">0 / 200 words</p>
+                </div>
+
                 <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Image URL (Optional)</label><input type="url" id="event-image" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
                 <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Registration Link / URL</label><input type="url" id="event-link" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
                 
@@ -252,6 +260,22 @@
             } else {
                 html.classList.add('dark');
                 icon.className = "fa-solid fa-sun";
+            }
+        };
+
+        window.checkWordLimit = function(textarea) {
+            const words = textarea.value.trim() ? textarea.value.trim().split(/\s+/) : [];
+            const count = words.length;
+            const display = document.getElementById('word-count-display');
+            
+            if (count > 200) {
+                const limitedWords = words.slice(0, 200);
+                textarea.value = limitedWords.join(' ');
+                display.innerText = "200 / 200 words (Limit reached)";
+                display.className = "text-[10px] text-red-500 text-right mt-1 font-bold";
+            } else {
+                display.innerText = `${count} / 200 words`;
+                display.className = "text-[10px] text-gray-400 text-right mt-1 font-medium";
             }
         };
 
@@ -355,6 +379,9 @@
             document.getElementById('event-time').value = '';
             document.getElementById('event-broad-location').value = '';
             document.getElementById('event-specific-location').value = '';
+            document.getElementById('event-description').value = '';
+            document.getElementById('word-count-display').innerText = '0 / 200 words';
+            document.getElementById('word-count-display').className = "text-[10px] text-gray-400 text-right mt-1 font-medium";
             document.getElementById('event-image').value = '';
             document.getElementById('event-link').value = '';
             document.getElementById('event-sport').value = 'Cricket';
@@ -367,6 +394,7 @@
             const sport = document.getElementById('event-sport').value;
             const broadLoc = document.getElementById('event-broad-location').value;
             const specificLoc = document.getElementById('event-specific-location').value;
+            const description = document.getElementById('event-description').value.trim();
             
             const date = document.getElementById('event-date').value;
             const endDate = document.getElementById('event-end-date').value;
@@ -390,6 +418,7 @@
                     broadLocation: broadLoc.trim(),
                     specificLocation: specificLoc.trim(),
                     location: `${broadLoc.trim()} - ${specificLoc.trim()}`,
+                    description: description || "",
                     image: image.trim() || "", 
                     link: link || "#",
                     postedBy: user.displayName,
@@ -446,19 +475,20 @@
                 let imageHTML = ev.image ? `<div class="mb-4 -mx-4 -mt-4"><img src="${ev.image}" class="w-full h-48 object-cover rounded-t-3xl"></div>` : '';
                 const dateDisplay = ev.endDate ? `${ev.date} to ${ev.endDate}` : ev.date;
                 const displayLocation = ev.location || `${ev.broadLocation} - ${ev.specificLocation}`;
+                const descHTML = ev.description ? `<p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-gray-800 p-3 rounded-xl border border-gray-100 dark:border-gray-700"><strong class="text-black dark:text-white block mb-1">Requirements & Info:</strong>${ev.description}</p>` : '';
 
                 feed.innerHTML += `
-                    <div class="bg-white card-bg p-5 rounded-3xl shadow-sm border border-gray-100 mb-5 transition-colors">
+                    <div class="bg-white card-bg p-5 rounded-3xl shadow-sm border border-gray-100 mb-5 transition-colors space-y-3">
                         ${imageHTML}
-                        <div class="flex justify-between items-center mb-3">
+                        <div class="flex justify-between items-center">
                             <span class="bg-blue-100 text-blue-800 text-[11px] font-black px-4 py-2 rounded-full uppercase tracking-wide text-center leading-tight max-w-[50%]">${ev.sport}</span>
                             <span class="text-[12px] font-bold text-gray-500 text-right leading-tight max-w-[40%]">${ev.organizerType}</span>
                         </div>
-                        <h3 class="text-xl font-bold text-black dark:text-white mb-1.5">${ev.title}</h3>
-                        <p class="text-xs font-medium text-gray-500 flex items-center mb-4">
+                        <h3 class="text-xl font-bold text-black dark:text-white">${ev.title}</h3>
+                        <p class="text-xs font-medium text-gray-500 flex items-center">
                             <i class="fa-solid fa-user-shield mr-1.5"></i> Posted by ${ev.postedBy}
                         </p>
-                        <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl space-y-3 text-xs mb-4">
+                        <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-2xl space-y-2 text-xs">
                             <div class="flex items-start text-gray-700 dark:text-gray-300">
                                 <i class="fa-regular fa-calendar text-blue-600 w-5 mt-0.5 text-sm"></i>
                                 <span class="font-medium leading-relaxed">${dateDisplay} at ${ev.time}</span>
@@ -468,7 +498,8 @@
                                 <span class="font-medium leading-relaxed">${displayLocation}</span>
                             </div>
                         </div>
-                        <a href="${ev.link}" target="_blank" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-2xl text-sm flex items-center justify-center space-x-2 transition">
+                        ${descHTML}
+                        <a href="${ev.link}" target="_blank" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-2xl text-sm flex items-center justify-center space-x-2 transition mt-2">
                             <span>Register / Event Link</span>
                             <i class="fa-solid fa-arrow-up-right-from-square text-[11px]"></i>
                         </a>
