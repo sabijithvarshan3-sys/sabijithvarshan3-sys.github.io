@@ -50,13 +50,20 @@
         </header>
                 <div class="flex-1 overflow-y-auto pb-safe">
             
-            <div id="feed-view" class="p-4 space-y-4">
+            <div id="feed-view" class="p-4 space-y-3">
+                <!-- Broad Search (e.g., State/City like Tamil Nadu) -->
                 <div class="relative">
-                    <i class="fa-solid fa-search absolute left-4 top-3.5 text-gray-400 text-sm"></i>
-                    <input type="text" id="search-input" oninput="filterEvents()" placeholder="Search by location (e.g. Tamil Nadu, Kerala) or sport" class="w-full pl-10 pr-4 py-3 bg-white card-bg border border-gray-100 rounded-2xl text-sm outline-none shadow-sm transition-colors">
+                    <i class="fa-solid fa-earth-asia absolute left-4 top-3.5 text-blue-500 text-sm"></i>
+                    <input type="text" id="broad-search" oninput="filterEvents()" placeholder="Broad area (e.g. Tamil Nadu, Kerala)" class="w-full pl-10 pr-4 py-3 bg-white card-bg border border-gray-100 rounded-2xl text-sm outline-none shadow-sm transition-colors">
+                </div>
+
+                <!-- Specific Search (e.g., Venue or College like Kongu Engineering) -->
+                <div class="relative">
+                    <i class="fa-solid fa-location-crosshairs absolute left-4 top-3.5 text-red-500 text-sm"></i>
+                    <input type="text" id="specific-search" oninput="filterEvents()" placeholder="Specific venue/college (e.g. Perundurai)" class="w-full pl-10 pr-4 py-3 bg-white card-bg border border-gray-100 rounded-2xl text-sm outline-none shadow-sm transition-colors">
                 </div>
                 
-                <div id="user-welcome" class="text-xs font-bold uppercase tracking-wider text-black dark:text-white text-center mt-4 mb-2"></div>
+                <div id="user-welcome" class="text-xs font-bold uppercase tracking-wider text-black dark:text-white text-center mt-2 mb-1"></div>
                 <div id="events-feed" class="space-y-4"></div>
             </div>
 
@@ -123,20 +130,29 @@
                 </div>
                 <div>
                     <label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Sport / Category</label>
-                    <select id="event-sport" onchange="checkCustomSport(this)" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none">
+                    <select id="event-sport" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none">
                         <option value="Cricket">Cricket</option>
                         <option value="Football">Football</option>
+                        <option value="Kabaddi">Kabaddi</option>
+                        <option value="Kho Kho">Kho Kho</option>
+                        <option value="Badminton">Badminton</option>
+                        <option value="Hockey">Hockey</option>
+                        <option value="Volleyball">Volleyball</option>
+                        <option value="Basketball">Basketball</option>
+                        <option value="Table Tennis">Table Tennis</option>
+                        <option value="Tennis">Tennis</option>
                         <option value="Athletics / Running">Athletics / Running</option>
-                        <option value="Other">Other (Custom Sport)</option>
+                        <option value="Chess">Chess</option>
+                        <option value="Wrestling (Kushti)">Wrestling (Kushti)</option>
+                        <option value="Gilli-Danda">Gilli-Danda</option>
                     </select>
                 </div>
-                <div id="custom-sport-box" class="hidden"><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Specify Sport</label><input type="text" id="custom-sport-input" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
                 <div class="grid grid-cols-2 gap-3">
                     <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Start Date</label><input type="date" id="event-date" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
                     <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">End Date (Optional)</label><input type="date" id="event-end-date" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
                 </div>
                 <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Time</label><input type="text" id="event-time" placeholder="e.g., 9:00 AM to 5:00 PM" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
-                <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Location / Venue</label><input type="text" id="event-location" placeholder="e.g., Kongu Engineering College" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
+                <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Location / Venue</label><input type="text" id="event-location" placeholder="e.g., Kongu Engineering College, Perundurai" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
                 <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Image URL (Optional)</label><input type="url" id="event-image" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
                 <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Registration Link / URL</label><input type="url" id="event-link" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
                 
@@ -262,23 +278,15 @@
             document.getElementById('event-location').value = '';
             document.getElementById('event-image').value = '';
             document.getElementById('event-link').value = '';
-            document.getElementById('custom-sport-box').classList.add('hidden');
             document.getElementById('event-sport').value = 'Cricket';
-        }
-
-        window.checkCustomSport = function(select) {
-            const customBox = document.getElementById('custom-sport-box');
-            if (select.value === 'Other') { customBox.classList.remove('hidden'); } else { customBox.classList.add('hidden'); }
         }
 
         window.submitRealEvent = async function() {
             const user = auth.currentUser;
             const title = document.getElementById('event-title').value;
             const organizerType = document.getElementById('organizer-type').value;
-            let sport = document.getElementById('event-sport').value;
+            const sport = document.getElementById('event-sport').value;
             
-            if (sport === 'Other') { sport = document.getElementById('custom-sport-input').value.trim(); }
-
             const date = document.getElementById('event-date').value;
             const endDate = document.getElementById('event-end-date').value;
             const time = document.getElementById('event-time').value;
@@ -326,18 +334,20 @@
         }
 
         window.filterEvents = function() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const broadTerm = document.getElementById('broad-search').value.toLowerCase();
+            const specificTerm = document.getElementById('specific-search').value.toLowerCase();
             const feed = document.getElementById('events-feed');
             feed.innerHTML = '';
 
-            const filtered = allEventsCache.filter(ev => 
-                ev.location.toLowerCase().includes(searchTerm) || 
-                ev.title.toLowerCase().includes(searchTerm) ||
-                ev.sport.toLowerCase().includes(searchTerm)
-            );
+            const filtered = allEventsCache.filter(ev => {
+                const loc = ev.location.toLowerCase();
+                const matchesBroad = loc.includes(broadTerm);
+                const matchesSpecific = loc.includes(specificTerm) || ev.title.toLowerCase().includes(specificTerm) || ev.sport.toLowerCase().includes(specificTerm);
+                return matchesBroad && matchesSpecific;
+            });
 
             if (filtered.length === 0) {
-                feed.innerHTML = '<p class="text-center text-gray-400 text-sm mt-10">No events found.</p>';
+                feed.innerHTML = '<p class="text-center text-gray-400 text-sm mt-10">No matching events found.</p>';
                 return;
             }
 
