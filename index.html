@@ -51,16 +51,19 @@
                 <div class="flex-1 overflow-y-auto pb-safe">
             
             <div id="feed-view" class="p-4 space-y-3">
-                <!-- Broad Search (e.g., State/City like Tamil Nadu) -->
-                <div class="relative">
-                    <i class="fa-solid fa-earth-asia absolute left-4 top-3.5 text-blue-500 text-sm"></i>
-                    <input type="text" id="broad-search" oninput="filterEvents()" placeholder="Broad area (e.g. Tamil Nadu, Kerala)" class="w-full pl-10 pr-4 py-3 bg-white card-bg border border-gray-100 rounded-2xl text-sm outline-none shadow-sm transition-colors">
+                <div id="recommendation-banner" class="bg-purple-50 dark:bg-purple-900 dark:bg-opacity-20 border border-purple-200 dark:border-purple-800 p-3 rounded-2xl flex justify-between items-center hidden">
+                    <span id="recommendation-text" class="text-xs font-bold text-purple-700 dark:text-purple-300">Showing recommendations for your sport!</span>
+                    <button onclick="clearRecommendation()" class="text-xs font-bold text-purple-600 underline">Show All</button>
                 </div>
 
-                <!-- Specific Search (e.g., Venue or College like Kongu Engineering) -->
+                <div class="relative">
+                    <i class="fa-solid fa-earth-asia absolute left-4 top-3.5 text-blue-500 text-sm"></i>
+                    <input type="text" id="broad-search" oninput="filterEvents()" placeholder="Search Broad Area (e.g. Tamil Nadu)" class="w-full pl-10 pr-4 py-3 bg-white card-bg border border-gray-100 rounded-2xl text-sm outline-none shadow-sm transition-colors">
+                </div>
+
                 <div class="relative">
                     <i class="fa-solid fa-location-crosshairs absolute left-4 top-3.5 text-red-500 text-sm"></i>
-                    <input type="text" id="specific-search" oninput="filterEvents()" placeholder="Specific venue/college (e.g. Perundurai)" class="w-full pl-10 pr-4 py-3 bg-white card-bg border border-gray-100 rounded-2xl text-sm outline-none shadow-sm transition-colors">
+                    <input type="text" id="specific-search" oninput="filterEvents()" placeholder="Search Specific Venue (e.g. Perundurai)" class="w-full pl-10 pr-4 py-3 bg-white card-bg border border-gray-100 rounded-2xl text-sm outline-none shadow-sm transition-colors">
                 </div>
                 
                 <div id="user-welcome" class="text-xs font-bold uppercase tracking-wider text-black dark:text-white text-center mt-2 mb-1"></div>
@@ -68,22 +71,49 @@
             </div>
 
             <div id="account-view" class="p-4 space-y-4 hidden">
-                <div class="bg-white card-bg p-6 rounded-3xl border border-gray-100 shadow-sm transition-colors">
-                    <div class="flex flex-col items-center mb-6">
+                <div class="bg-white card-bg p-6 rounded-3xl border border-gray-100 shadow-sm transition-colors space-y-5">
+                    <div class="flex flex-col items-center">
                         <div id="profile-avatar-container" class="w-24 h-24 bg-blue-500 text-white rounded-full flex items-center justify-center text-4xl font-normal mb-3 overflow-hidden shadow-inner">
                             <span id="profile-initial">U</span>
                         </div>
                         <h2 id="profile-name" class="text-xl font-bold text-black dark:text-white">User Name</h2>
                         <p id="profile-email" class="text-sm text-gray-600 dark:text-gray-400 mt-1">email@example.com</p>
+                        <p id="profile-bio" class="text-xs text-purple-600 dark:text-purple-400 font-bold mt-2 bg-purple-50 dark:bg-purple-900 dark:bg-opacity-30 px-3 py-1 rounded-full">Plays: None specified</p>
                     </div>
-                    <div class="mb-6">
+
+                    <div>
+                        <label class="text-[11px] font-bold uppercase text-black dark:text-gray-300 block mb-2">Update Sport Interest / Bio</label>
+                        <div class="flex space-x-2">
+                            <select id="user-sport-select" class="flex-1 border border-gray-200 p-3 rounded-xl text-sm outline-none bg-white dark:bg-gray-800">
+                                <option value="">Select your sport...</option>
+                                <option value="Cricket">Cricket</option>
+                                <option value="Football">Football</option>
+                                <option value="Kabaddi">Kabaddi</option>
+                                <option value="Kho Kho">Kho Kho</option>
+                                <option value="Badminton">Badminton</option>
+                                <option value="Hockey">Hockey</option>
+                                <option value="Volleyball">Volleyball</option>
+                                <option value="Basketball">Basketball</option>
+                                <option value="Table Tennis">Table Tennis</option>
+                                <option value="Tennis">Tennis</option>
+                                <option value="Athletics / Running">Athletics / Running</option>
+                                <option value="Chess">Chess</option>
+                                <option value="Wrestling (Kushti)">Wrestling (Kushti)</option>
+                                <option value="Gilli-Danda">Gilli-Danda</option>
+                            </select>
+                            <button onclick="updateUserSport()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 rounded-xl text-sm shadow-sm transition">Save</button>
+                        </div>
+                    </div>
+
+                    <div>
                         <label class="text-[11px] font-bold uppercase text-black dark:text-gray-300 block mb-2">Change Profile Picture URL</label>
                         <div class="flex space-x-2">
                             <input type="url" id="profile-pic-input" placeholder="https://... image link" class="flex-1 border border-gray-200 p-3 rounded-xl text-sm outline-none bg-white dark:bg-gray-800">
                             <button onclick="updateProfilePic()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 rounded-xl text-sm shadow-sm transition">Update</button>
                         </div>
                     </div>
-                    <div class="mb-6">
+
+                    <div class="mb-2">
                         <label class="text-[11px] font-bold uppercase text-black dark:text-gray-300 block mb-2">Account Centre Settings</label>
                         <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-3.5 flex justify-between items-center border border-gray-100 dark:border-gray-700">
                             <span class="text-sm font-bold text-black dark:text-white">Authentication Status</span>
@@ -92,6 +122,7 @@
                             </span>
                         </div>
                     </div>
+
                     <button onclick="logout()" class="w-full bg-red-50 dark:bg-red-900 dark:bg-opacity-20 hover:bg-red-100 text-red-600 dark:text-red-400 font-bold py-3.5 rounded-2xl text-sm transition flex justify-center items-center">
                         <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> Log Out
                     </button>
@@ -152,7 +183,17 @@
                     <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">End Date (Optional)</label><input type="date" id="event-end-date" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
                 </div>
                 <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Time</label><input type="text" id="event-time" placeholder="e.g., 9:00 AM to 5:00 PM" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
-                <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Location / Venue</label><input type="text" id="event-location" placeholder="e.g., Kongu Engineering College, Perundurai" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
+                
+                <div>
+                    <label class="text-xs font-bold uppercase text-blue-600 mb-1 block">Broad Location (State / City)</label>
+                    <input type="text" id="event-broad-location" placeholder="e.g., Tamil Nadu" class="w-full border border-blue-200 p-3 rounded-xl text-sm outline-none">
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold uppercase text-red-500 mb-1 block">Specific Venue / Address</label>
+                    <input type="text" id="event-specific-location" placeholder="e.g., Kongu Engineering College, Perundurai" class="w-full border border-red-200 p-3 rounded-xl text-sm outline-none">
+                </div>
+
                 <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Image URL (Optional)</label><input type="url" id="event-image" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
                 <div><label class="text-xs font-bold uppercase text-gray-500 mb-1 block">Registration Link / URL</label><input type="url" id="event-link" class="w-full border border-gray-300 p-3 rounded-xl text-sm outline-none"></div>
                 
@@ -181,6 +222,7 @@
         const provider = new GoogleAuthProvider();
         const db = getFirestore(app);
         let allEventsCache = [];
+        let currentUserSport = localStorage.getItem('sportsx_usersport') || "";
 
         window.switchTab = function(tab) {
             const feedView = document.getElementById('feed-view');
@@ -219,6 +261,12 @@
             document.getElementById('profile-name').innerText = user.displayName;
             document.getElementById('profile-email').innerText = user.email;
             
+            if (currentUserSport) {
+                document.getElementById('profile-bio').innerText = "Plays: " + currentUserSport;
+                document.getElementById('user-sport-select').value = currentUserSport;
+                showRecommendationBanner(currentUserSport);
+            }
+
             const avatarContainer = document.getElementById('profile-avatar-container');
             if (user.photoURL) {
                 avatarContainer.innerHTML = `<img src="${user.photoURL}" class="w-full h-full object-cover" alt="Profile">`;
@@ -229,6 +277,36 @@
             }
             loadEvents();
         }
+
+        window.updateUserSport = function() {
+            const sport = document.getElementById('user-sport-select').value;
+            if (sport) {
+                currentUserSport = sport;
+                localStorage.setItem('sportsx_usersport', sport);
+                document.getElementById('profile-bio').innerText = "Plays: " + sport;
+                showRecommendationBanner(sport);
+                alert("Sport interest updated! Recommendations active for " + sport);
+                window.filterEvents();
+            } else {
+                alert("Please select a sport.");
+            }
+        };
+
+        function showRecommendationBanner(sport) {
+            const banner = document.getElementById('recommendation-banner');
+            const text = document.getElementById('recommendation-text');
+            text.innerText = `⭐ Recommended for you: ${sport}`;
+            banner.classList.remove('hidden');
+        }
+
+        window.clearRecommendation = function() {
+            currentUserSport = "";
+            localStorage.removeItem('sportsx_usersport');
+            document.getElementById('profile-bio').innerText = "Plays: None specified";
+            document.getElementById('user-sport-select').value = "";
+            document.getElementById('recommendation-banner').classList.add('hidden');
+            window.filterEvents();
+        };
 
         window.updateProfilePic = function() {
             const url = document.getElementById('profile-pic-input').value.trim();
@@ -275,7 +353,8 @@
             document.getElementById('event-date').value = '';
             document.getElementById('event-end-date').value = ''; 
             document.getElementById('event-time').value = '';
-            document.getElementById('event-location').value = '';
+            document.getElementById('event-broad-location').value = '';
+            document.getElementById('event-specific-location').value = '';
             document.getElementById('event-image').value = '';
             document.getElementById('event-link').value = '';
             document.getElementById('event-sport').value = 'Cricket';
@@ -286,17 +365,18 @@
             const title = document.getElementById('event-title').value;
             const organizerType = document.getElementById('organizer-type').value;
             const sport = document.getElementById('event-sport').value;
+            const broadLoc = document.getElementById('event-broad-location').value;
+            const specificLoc = document.getElementById('event-specific-location').value;
             
             const date = document.getElementById('event-date').value;
             const endDate = document.getElementById('event-end-date').value;
             const time = document.getElementById('event-time').value;
-            const location = document.getElementById('event-location').value;
             const image = document.getElementById('event-image').value;
             const link = document.getElementById('event-link').value;
             const submitBtn = document.getElementById('submit-btn');
 
-            if (!title.trim() || !date || !location) {
-                alert("Please fill in the Event Title, Start Date, and Location.");
+            if (!title.trim() || !date || !broadLoc.trim() || !specificLoc.trim()) {
+                alert("Please fill in the Event Title, Start Date, Broad Location, and Specific Venue.");
                 return;
             }
 
@@ -305,8 +385,13 @@
             try {
                 await addDoc(collection(db, "events"), {
                     title, sport, organizerType, date,
-                    endDate: endDate || "", time: time || "TBD", location,
-                    image: image.trim() || "", link: link || "#",
+                    endDate: endDate || "", 
+                    time: time || "TBD", 
+                    broadLocation: broadLoc.trim(),
+                    specificLocation: specificLoc.trim(),
+                    location: `${broadLoc.trim()} - ${specificLoc.trim()}`,
+                    image: image.trim() || "", 
+                    link: link || "#",
                     postedBy: user.displayName,
                     createdAt: new Date().getTime()
                 });
@@ -340,14 +425,18 @@
             feed.innerHTML = '';
 
             const filtered = allEventsCache.filter(ev => {
-                const loc = ev.location.toLowerCase();
-                const matchesBroad = loc.includes(broadTerm);
-                const matchesSpecific = loc.includes(specificTerm) || ev.title.toLowerCase().includes(specificTerm) || ev.sport.toLowerCase().includes(specificTerm);
-                return matchesBroad && matchesSpecific;
+                const broad = (ev.broadLocation || ev.location).toLowerCase();
+                const specific = (ev.specificLocation || ev.location).toLowerCase();
+                
+                const matchesBroad = broad.includes(broadTerm);
+                const matchesSpecific = specific.includes(specificTerm) || ev.title.toLowerCase().includes(specificTerm) || ev.sport.toLowerCase().includes(specificTerm);
+                const matchesSportBio = currentUserSport ? ev.sport.toLowerCase() === currentUserSport.toLowerCase() : true;
+                
+                return matchesBroad && matchesSpecific && matchesSportBio;
             });
 
             if (filtered.length === 0) {
-                feed.innerHTML = '<p class="text-center text-gray-400 text-sm mt-10">No matching events found.</p>';
+                feed.innerHTML = `<p class="text-center text-gray-400 text-sm mt-10">No matching events found ${currentUserSport ? 'for your sport ('+currentUserSport+')' : ''}.</p>`;
                 return;
             }
 
@@ -356,6 +445,7 @@
             filtered.forEach(ev => {
                 let imageHTML = ev.image ? `<div class="mb-4 -mx-4 -mt-4"><img src="${ev.image}" class="w-full h-48 object-cover rounded-t-3xl"></div>` : '';
                 const dateDisplay = ev.endDate ? `${ev.date} to ${ev.endDate}` : ev.date;
+                const displayLocation = ev.location || `${ev.broadLocation} - ${ev.specificLocation}`;
 
                 feed.innerHTML += `
                     <div class="bg-white card-bg p-5 rounded-3xl shadow-sm border border-gray-100 mb-5 transition-colors">
@@ -375,7 +465,7 @@
                             </div>
                             <div class="flex items-start text-gray-700 dark:text-gray-300">
                                 <i class="fa-solid fa-location-dot text-red-500 w-5 mt-0.5 text-sm"></i>
-                                <span class="font-medium leading-relaxed">${ev.location}</span>
+                                <span class="font-medium leading-relaxed">${displayLocation}</span>
                             </div>
                         </div>
                         <a href="${ev.link}" target="_blank" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-2xl text-sm flex items-center justify-center space-x-2 transition">
